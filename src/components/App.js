@@ -4,6 +4,11 @@ import './App.css';
 
 import Header from './Header/Header';
 import Compose from './Compose/Compose';
+import Post from './Post/Post'
+
+import axios from 'axios';
+
+const BASE = 'https://practiceapi.devmountain.com/api'
 
 class App extends Component {
   constructor() {
@@ -19,6 +24,12 @@ class App extends Component {
   }
   
   componentDidMount() {
+    axios({
+      method: 'GET',
+      url: BASE + '/posts'
+    }).then(result => {
+      this.setState({ posts: result.data })
+    })
 
   }
 
@@ -44,6 +55,12 @@ class App extends Component {
         <section className="App__content">
 
           <Compose />
+
+          {
+            posts.map( post => (
+              <Post key={ post.id } text={ post.text } date={ post.date } />
+            ))
+          }
           
         </section>
       </div>

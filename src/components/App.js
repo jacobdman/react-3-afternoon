@@ -8,7 +8,7 @@ import Post from './Post/Post'
 
 import axios from 'axios';
 
-const BASE = 'https://practiceapi.devmountain.com/api'
+const BASE = 'https://practiceapi.devmountain.com/api/posts'
 
 class App extends Component {
   constructor() {
@@ -26,25 +26,58 @@ class App extends Component {
   componentDidMount() {
     axios({
       method: 'GET',
-      url: BASE + '/posts'
+      url: BASE,
     }).then(result => {
       this.setState({ posts: result.data })
     })
 
   }
 
-  updatePost() {
-  
+  updatePost(id, text) {
+    axios({
+      method: 'PUT',
+      url: BASE + '?id=' + id,
+      data: {
+        text: text
+      }
+    })
+    .then( (response) => {
+      this.setState({
+        posts: response.data
+      })
+    })
+    .catch((err) => {
+      console.log('Delete Post had an error', err)
+    })
   }
 
-  deletePost() {
+  deletePost(id) {
+    axios.delete(BASE + '?id=' + id)
+    .then((response) => {
+      this.setState({
+        posts: response.data
+      })
+    })
 
   }
 
-  createPost() {
-
+  createPost(text) {
+    return axios({
+      method: 'POST',
+      url: BASE,
+      data: {
+        text: text
+      }
+    .then((response) => {
+      this.setState({
+        post: response.data
+      })
+    })
+  })
+  .catch((err) => {
+    console.log('Create Post had an error', err)
+  })
   }
-
   render() {
     const { posts } = this.state;
 
@@ -55,10 +88,18 @@ class App extends Component {
         <section className="App__content">
 
           <Compose />
-
+          createPostFN={this.createPost}
           {
             posts.map( post => (
-              <Post key={ post.id } text={ post.text } date={ post.date } />
+              <Post 
+              key={ post.id } 
+              text={ post.text } 
+              date={ post.date } 
+              id={ post.id } 
+ 
+              updatePostFN={this.updatePost} 
+              deletePostFN={this.deletePost}
+              />
             ))
           }
           
@@ -69,3 +110,4 @@ class App extends Component {
 }
 
 export default App;
+

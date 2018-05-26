@@ -6,8 +6,8 @@ import './Compose.css';
 //////////////////////////////////////////////////////// THIS COMPONENT IS BEING RENDERED IN THE *APP* COMPONENT
 
 export default class Compose extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     
     this.state = {
       text: ''
@@ -21,7 +21,12 @@ export default class Compose extends Component {
   }
 
   createPost() {
-
+    this.props.createPostFN(this.state.text)
+    .then(() => {
+      this.setState({
+        text: ''
+      })
+    })
   }
 
   render() {
